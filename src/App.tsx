@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Copy, ExternalLink, Shuffle, Moon, Sun } from 'lucide-react';
+import { Copy, ExternalLink, Shuffle, Moon, Sun, Github } from 'lucide-react';
 
 // Custom hook for theme management
 const useTheme = () => {
@@ -93,30 +93,47 @@ export default function App() {
     window.open(url, '_blank');
   };
 
+  const openGitHub = () => {
+    window.open('https://github.com/HeySreelal/waypoint', '_blank');
+  };
+
   const displayLat = isGenerating ? animatedLat : coordinates.lat;
   const displayLng = isGenerating ? animatedLng : coordinates.lng;
 
   const isDark = theme === 'dark';
 
   return (
-    <div className={`min-h-screen px-4 py-8 sm:py-12 flex items-center justify-center transition-all duration-300 ${isDark
-        ? 'bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900'
-        : 'bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-100'
+    <div className={`min-h-screen px-4 py-8 sm:py-12 flex items-center justify-center transition-all duration-300 relative ${isDark
+      ? 'bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900'
+      : 'bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-100'
       }`}>
-      <div className="max-w-sm mx-auto">
-        {/* Theme Toggle */}
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={toggleTheme}
-            className={`p-2 rounded-lg transition-all duration-200 ${isDark
-                ? 'bg-gray-800 hover:bg-gray-700 text-yellow-400'
-                : 'bg-white/80 hover:bg-white text-gray-600'
-              } shadow-lg hover:shadow-xl`}
-          >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-        </div>
 
+      {/* Top Right Controls */}
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex space-x-2">
+        <button
+          onClick={openGitHub}
+          className={`p-2 rounded-lg transition-all duration-200 ${isDark
+            ? 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+            : 'bg-white/80 hover:bg-white text-gray-600'
+            } cursor-pointer hover:shadow-xl`}
+          title="View on GitHub"
+        >
+          <Github className="w-5 h-5" />
+        </button>
+
+        <button
+          onClick={toggleTheme}
+          className={`p-2 rounded-lg transition-all duration-200 ${isDark
+            ? 'bg-gray-800 hover:bg-gray-700 text-yellow-400'
+            : 'bg-white/80 hover:bg-white text-gray-600'
+            } cursor-pointer hover:shadow-xl`}
+          title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+        >
+          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
+      </div>
+
+      <div className="max-w-sm mx-auto">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
           <div className="mb-6">
@@ -174,8 +191,8 @@ export default function App() {
               checked={includeOceans}
               onChange={(e) => setIncludeOceans(e.target.checked)}
               className={`w-4 h-4 border rounded focus:ring-2 ${isDark
-                  ? 'text-emerald-500 bg-gray-700 border-gray-600 focus:ring-emerald-500'
-                  : 'text-teal-600 bg-gray-100 border-gray-300 focus:ring-teal-500'
+                ? 'text-emerald-500 bg-gray-700 border-gray-600 focus:ring-emerald-500'
+                : 'text-teal-600 bg-gray-100 border-gray-300 focus:ring-teal-500'
                 }`}
             />
             <span className={`font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'
@@ -194,8 +211,8 @@ export default function App() {
           onClick={generateRandomCoordinates}
           disabled={isGenerating}
           className={`w-full font-semibold py-4 sm:py-5 px-6 rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl mb-4 ${isDark
-              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700'
-              : 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white hover:from-teal-600 hover:to-emerald-700'
+            ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700'
+            : 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white hover:from-teal-600 hover:to-emerald-700'
             } ${isGenerating
               ? 'opacity-70 cursor-not-allowed'
               : 'hover:scale-[1.02] active:scale-[0.98]'
@@ -215,8 +232,8 @@ export default function App() {
             <button
               onClick={copyToClipboard}
               className={`flex-1 font-medium py-3 sm:py-4 px-4 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg border ${isDark
-                  ? 'bg-gray-800/80 backdrop-blur-sm hover:bg-gray-700 text-gray-300 border-gray-600'
-                  : 'bg-white/80 backdrop-blur-sm hover:bg-white text-gray-700 border-gray-200'
+                ? 'bg-gray-800/80 backdrop-blur-sm hover:bg-gray-700 text-gray-300 border-gray-600'
+                : 'bg-white/80 backdrop-blur-sm hover:bg-white text-gray-700 border-gray-200'
                 }`}
             >
               <div className="flex items-center justify-center space-x-2">
@@ -228,8 +245,8 @@ export default function App() {
             <button
               onClick={openInGoogleMaps}
               className={`flex-1 font-medium py-3 sm:py-4 px-4 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg border ${isDark
-                  ? 'bg-emerald-900/50 hover:bg-emerald-800/60 text-emerald-300 border-emerald-700'
-                  : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-700 border-emerald-200'
+                ? 'bg-emerald-900/50 hover:bg-emerald-800/60 text-emerald-300 border-emerald-700'
+                : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-700 border-emerald-200'
                 }`}
             >
               <div className="flex items-center justify-center space-x-2">
