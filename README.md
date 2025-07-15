@@ -1,69 +1,29 @@
-# React + TypeScript + Vite
+# Waypoint 🌍
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple random coordinate generator because sometimes you just want to explore somewhere completely random.
 
-Currently, two official plugins are available:
+## Why I built this
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+I love browsing Google Maps street view, but I kept finding myself only looking at places I already knew about. There's literally millions of interesting spots on Earth, but I was stuck in my bubble of familiar locations.
 
-## Expanding the ESLint configuration
+Then recently a friend randomly asked me to send them some coordinates, and I just typed something off the top of my head. That's when it hit me - why not make a simple tool that just spits out random coordinates? It's dead simple, maybe a bit stupid, but hey, it works.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## What it does
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Generates random GPS coordinates anywhere on Earth
+- Toggle between "anywhere" (including oceans) or just continental areas
+- Copy coordinates to clipboard
+- Open the location directly in Google Maps
+- Dark/light mode because why not
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Try it
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+**[thewaypoint.web.app](https://thewaypoint.web.app)**
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tech stuff
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Built with React, Vite, and Tailwind CSS. Nothing fancy, just a clean little web app that does one thing well.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+*Every click takes you somewhere new. Have fun exploring!*
