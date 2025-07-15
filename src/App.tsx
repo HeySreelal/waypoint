@@ -1,16 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Copy, ExternalLink, Shuffle, Moon, Sun, Github, Check } from 'lucide-react';
-
-// Custom hook for theme management
-const useTheme = () => {
-  const [theme, setTheme] = useState('dark');
-
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  };
-
-  return { theme, toggleTheme };
-};
+import AboutModal from './components/AboutModal';
+import useTheme from './hooks/theme';
 
 export default function App() {
   const { theme, toggleTheme } = useTheme();
@@ -20,6 +11,7 @@ export default function App() {
   const [animatedLng, setAnimatedLng] = useState(0);
   const [copied, setCopied] = useState(false);
   const [includeOceans, setIncludeOceans] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Continent bounding boxes (approximate)
   const continentBounds = [
@@ -90,6 +82,14 @@ export default function App() {
     window.open('https://github.com/HeySreelal/waypoint', '_blank');
   };
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   const displayLat = isGenerating ? animatedLat : coordinates.lat;
   const displayLng = isGenerating ? animatedLng : coordinates.lng;
 
@@ -105,10 +105,13 @@ export default function App() {
       {/* Top Right Controls */}
       <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center space-x-3 z-10">
         {/* Logo */}
-        <div className={`p-2 rounded-lg border ${isDark
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'
-          }`}>
+        <div
+          onClick={openModal}
+          className={`p-2 rounded-lg border cursor-pointer transition-all duration-200 hover:scale-105 ${isDark
+            ? 'bg-gray-800 border-gray-700 hover:bg-gray-700'
+            : 'bg-white border-gray-200 hover:bg-gray-50'
+            }`}
+        >
           <img
             src="/logo.png"
             alt="Waypoint Logo"
@@ -287,6 +290,9 @@ export default function App() {
           </div>
         )}
       </div>
+
+      {/* Modal */}
+      <AboutModal isOpen={isModalOpen} onClose={closeModal} isDark={isDark} />
     </div>
   );
 }
