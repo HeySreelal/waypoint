@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Copy, ExternalLink, Shuffle, Moon, Sun, Github } from 'lucide-react';
+import { Copy, ExternalLink, Shuffle, Moon, Sun, Github, Check } from 'lucide-react';
 
 // Custom hook for theme management
 const useTheme = () => {
-  const [theme, setTheme] = useState('dark'); // Default to dark mode
+  const [theme, setTheme] = useState('dark');
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
@@ -23,19 +23,12 @@ export default function App() {
 
   // Continent bounding boxes (approximate)
   const continentBounds = [
-    // North America
     { name: 'North America', minLat: 25, maxLat: 72, minLng: -168, maxLng: -52 },
-    // South America
     { name: 'South America', minLat: -56, maxLat: 13, minLng: -82, maxLng: -35 },
-    // Europe
     { name: 'Europe', minLat: 36, maxLat: 71, minLng: -10, maxLng: 40 },
-    // Asia
     { name: 'Asia', minLat: 10, maxLat: 77, minLng: 26, maxLng: 180 },
-    // Africa
     { name: 'Africa', minLat: -35, maxLat: 37, minLng: -18, maxLng: 52 },
-    // Australia
     { name: 'Australia', minLat: -44, maxLat: -10, minLng: 113, maxLng: 154 },
-    // Antarctica
     { name: 'Antarctica', minLat: -90, maxLat: -60, minLng: -180, maxLng: 180 }
   ];
 
@@ -45,7 +38,7 @@ export default function App() {
       const interval = setInterval(() => {
         setAnimatedLat((Math.random() - 0.5) * 180);
         setAnimatedLng((Math.random() - 0.5) * 360);
-      }, 50);
+      }, 80);
 
       return () => clearInterval(interval);
     }
@@ -66,8 +59,8 @@ export default function App() {
       let lat, lng;
 
       if (includeOceans) {
-        lat = (Math.random() - 0.5) * 180; // -90 to 90
-        lng = (Math.random() - 0.5) * 360; // -180 to 180
+        lat = (Math.random() - 0.5) * 180;
+        lng = (Math.random() - 0.5) * 360;
       } else {
         const coords = generateRandomCoordinatesInContinent();
         lat = coords.lat;
@@ -78,7 +71,7 @@ export default function App() {
       setAnimatedLat(lat);
       setAnimatedLng(lng);
       setIsGenerating(false);
-    }, 1500);
+    }, 1200);
   };
 
   const copyToClipboard = () => {
@@ -89,7 +82,7 @@ export default function App() {
   };
 
   const openInGoogleMaps = () => {
-    const url = `http://maps.google.com/?q=${coordinates.lat},${coordinates.lng}`;
+    const url = `https://maps.google.com/?q=${coordinates.lat},${coordinates.lng}`;
     window.open(url, '_blank');
   };
 
@@ -101,21 +94,34 @@ export default function App() {
   const displayLng = isGenerating ? animatedLng : coordinates.lng;
 
   const isDark = theme === 'dark';
+  const hasCoordinates = coordinates.lat !== 0 || coordinates.lng !== 0;
 
   return (
-    <div className={`min-h-screen px-4 py-8 sm:py-12 flex items-center justify-center transition-all duration-300 relative ${isDark
-      ? 'bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900'
-      : 'bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-100'
+    <div className={`min-h-screen px-4 py-6 sm:py-8 flex items-center justify-center transition-all duration-300 ${isDark
+      ? 'bg-gray-900'
+      : 'bg-gray-50'
       }`}>
 
       {/* Top Right Controls */}
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex space-x-2">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center space-x-3 z-10">
+        {/* Logo */}
+        <div className={`p-2 rounded-lg border ${isDark
+          ? 'bg-gray-800 border-gray-700'
+          : 'bg-white border-gray-200'
+          }`}>
+          <img
+            src="/logo.png"
+            alt="Waypoint Logo"
+            className="w-8 h-8 sm:w-10 sm:h-10"
+          />
+        </div>
+
         <button
           onClick={openGitHub}
-          className={`p-2 rounded-lg transition-all duration-200 ${isDark
-            ? 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-            : 'bg-white/80 hover:bg-white text-gray-600'
-            } cursor-pointer hover:shadow-xl`}
+          className={`p-3 cursor-pointer rounded-lg transition-all duration-200 border ${isDark
+            ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700 hover:border-gray-600'
+            : 'bg-white hover:bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300'
+            }`}
           title="View on GitHub"
         >
           <Github className="w-5 h-5" />
@@ -123,147 +129,163 @@ export default function App() {
 
         <button
           onClick={toggleTheme}
-          className={`p-2 rounded-lg transition-all duration-200 ${isDark
-            ? 'bg-gray-800 hover:bg-gray-700 text-yellow-400'
-            : 'bg-white/80 hover:bg-white text-gray-600'
-            } cursor-pointer hover:shadow-xl`}
+          className={`p-3 cursor-pointer rounded-lg transition-all duration-200 border ${isDark
+            ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700 hover:border-gray-600'
+            : 'bg-white hover:bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300'
+            }`}
           title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
         >
           {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </button>
       </div>
 
-      <div className="max-w-sm mx-auto">
+      <div className="max-w-md mx-auto w-full relative z-10">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <div className="mb-6">
-            <img
-              src="/logo.png"
-              alt="Waypoint Logo"
-              className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl object-cover"
-            />
-          </div>
-          <h1 className={`text-3xl sm:text-4xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-800'
-            }`}>
+        <div className="text-center mb-10 sm:mb-12 mt-16 sm:mt-20">
+          <h1 className={`text-4xl sm:text-5xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Waypoint
           </h1>
-          <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'
-            }`}>
-            Discover random places on Earth
-          </p>
+          <div className="text-center">
+            <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-lg border ${isDark
+              ? 'bg-gray-800 border-gray-700 text-gray-300'
+              : 'bg-white border-gray-200 text-gray-600'
+              }`}>
+              <p className="text-sm font-medium">
+                🌍 Every click takes you to a unique place on Earth!
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Coordinates Display */}
         <div className="mb-8 sm:mb-10">
-          <div className="text-center space-y-6">
-            <div>
-              <div className={`text-sm mb-2 font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'
-                }`}>
-                Latitude
-              </div>
-              <div className={`text-2xl sm:text-3xl font-mono font-bold transition-all duration-100 ${isDark ? 'text-emerald-400' : 'text-teal-700'
-                } ${isGenerating ? 'blur-sm scale-110' : ''}`}>
-                {displayLat.toFixed(6)}°
-              </div>
-            </div>
+          <div className={`p-6 sm:p-8 rounded-lg border ${isDark
+            ? 'bg-gray-800 border-gray-700'
+            : 'bg-white border-gray-200'
+            } ${hasCoordinates ? 'shadow-lg' : 'shadow-sm'}`}>
 
-            <div className={`w-12 h-px mx-auto ${isDark ? 'bg-gray-600' : 'bg-gray-300'
-              }`}></div>
-
-            <div>
-              <div className={`text-sm mb-2 font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'
-                }`}>
-                Longitude
+            <div className="space-y-6">
+              <div className="text-center">
+                <div className={`text-sm mb-3 font-semibold tracking-wide uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Latitude
+                </div>
+                <div className={`text-3xl sm:text-4xl font-mono font-bold transition-all duration-200 ${isDark ? 'text-blue-400' : 'text-blue-600'} 
+                  ${isGenerating ? 'blur-sm scale-105' : 'scale-100'}`}>
+                  {displayLat.toFixed(6)}°
+                </div>
               </div>
-              <div className={`text-2xl sm:text-3xl font-mono font-bold transition-all duration-100 ${isDark ? 'text-emerald-400' : 'text-teal-700'
-                } ${isGenerating ? 'blur-sm scale-110' : ''}`}>
-                {displayLng.toFixed(6)}°
+
+              <div className="flex items-center justify-center">
+                <div className={`w-16 h-px ${isDark ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                <div className={`mx-3 w-2 h-2 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                <div className={`w-16 h-px ${isDark ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+              </div>
+
+              <div className="text-center">
+                <div className={`text-sm mb-3 font-semibold tracking-wide uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Longitude
+                </div>
+                <div className={`text-3xl sm:text-4xl font-mono font-bold transition-all duration-200 ${isDark ? 'text-green-400' : 'text-green-600'} 
+                  ${isGenerating ? 'blur-sm scale-105' : 'scale-100'}`}>
+                  {displayLng.toFixed(6)}°
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Checkbox for ocean inclusion */}
-        <div className="mb-6 sm:mb-8">
-          <label className="flex items-center justify-center space-x-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={includeOceans}
-              onChange={(e) => setIncludeOceans(e.target.checked)}
-              className={`w-4 h-4 border rounded focus:ring-2 ${isDark
-                ? 'text-emerald-500 bg-gray-700 border-gray-600 focus:ring-emerald-500'
-                : 'text-teal-600 bg-gray-100 border-gray-300 focus:ring-teal-500'
-                }`}
-            />
-            <span className={`font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'
-              }`}>
-              Include oceans
-            </span>
-          </label>
-          <p className={`text-center text-sm mt-2 ${isDark ? 'text-gray-400' : 'text-gray-500'
+        {/* Ocean Inclusion Toggle */}
+        <div className="mb-8 sm:mb-10">
+          <div className={`p-4 sm:p-5 rounded-lg border ${isDark
+            ? 'bg-gray-800 border-gray-700'
+            : 'bg-white border-gray-200'
             }`}>
-            {includeOceans ? 'Anywhere on Earth' : 'Approximately continental regions only'}
-          </p>
+            <label className="flex items-center justify-between cursor-pointer">
+              <div>
+                <span className={`font-semibold text-lg ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>
+                  Include oceans
+                </span>
+                <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {includeOceans ? 'Anywhere on Earth' : 'Approximately, continental regions only'}
+                </p>
+              </div>
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={includeOceans}
+                  onChange={(e) => setIncludeOceans(e.target.checked)}
+                  className="sr-only"
+                />
+                <div className={`w-12 h-6 rounded-full transition-all duration-300 flex items-center ${includeOceans
+                  ? (isDark ? 'bg-blue-600' : 'bg-blue-500')
+                  : (isDark ? 'bg-gray-600' : 'bg-gray-300')
+                  }`}>
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-300 transform ${includeOceans ? 'translate-x-6' : 'translate-x-0.5'}`}></div>
+                </div>
+              </div>
+            </label>
+          </div>
         </div>
 
         {/* Generate Button */}
         <button
           onClick={generateRandomCoordinates}
           disabled={isGenerating}
-          className={`w-full font-semibold py-4 sm:py-5 px-6 rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl mb-4 ${isDark
-            ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700'
-            : 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white hover:from-teal-600 hover:to-emerald-700'
+          className={`w-full font-bold py-5 sm:py-6 px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md mb-6 text-lg sm:text-xl ${isDark
+            ? 'bg-blue-600 hover:bg-blue-700 text-white'
+            : 'bg-blue-600 hover:bg-blue-700 text-white'
             } ${isGenerating
               ? 'opacity-70 cursor-not-allowed'
-              : 'hover:scale-[1.02] active:scale-[0.98]'
+              : 'hover:scale-105 active:scale-95'
             }`}
         >
           <div className="flex items-center justify-center space-x-3">
-            <Shuffle className={`w-5 h-5 ${isGenerating ? 'animate-spin' : ''}`} />
-            <span className="text-lg">
+            <Shuffle className={`w-6 h-6 transition-transform duration-300 ${isGenerating ? 'animate-spin' : ''}`} />
+            <span>
               {isGenerating ? 'Generating...' : 'Generate Random Location'}
             </span>
           </div>
         </button>
 
         {/* Action Buttons */}
-        {(coordinates.lat !== 0 || coordinates.lng !== 0) && !isGenerating && (
-          <div className="flex space-x-3">
+        {hasCoordinates && !isGenerating && (
+          <div className="flex space-x-4 animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
             <button
               onClick={copyToClipboard}
-              className={`flex-1 font-medium py-3 sm:py-4 px-4 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg border ${isDark
-                ? 'bg-gray-800/80 backdrop-blur-sm hover:bg-gray-700 text-gray-300 border-gray-600'
-                : 'bg-white/80 backdrop-blur-sm hover:bg-white text-gray-700 border-gray-200'
-                }`}
+              className={`flex-1 font-semibold py-4 sm:py-5 px-5 rounded-lg transition-all duration-200 border ${isDark
+                ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700 hover:border-gray-600'
+                : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300'
+                } hover:scale-105 active:scale-95 shadow-sm hover:shadow-md`}
             >
               <div className="flex items-center justify-center space-x-2">
-                <Copy className="w-4 h-4" />
-                <span>{copied ? 'Copied!' : 'Copy'}</span>
+                {copied ? (
+                  <>
+                    <Check className="w-5 h-5 text-green-500" />
+                    <span className="text-green-500">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-5 h-5" />
+                    <span>Copy</span>
+                  </>
+                )}
               </div>
             </button>
 
             <button
               onClick={openInGoogleMaps}
-              className={`flex-1 font-medium py-3 sm:py-4 px-4 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg border ${isDark
-                ? 'bg-emerald-900/50 hover:bg-emerald-800/60 text-emerald-300 border-emerald-700'
-                : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-700 border-emerald-200'
-                }`}
+              className={`flex-1 font-semibold py-4 sm:py-5 px-5 rounded-lg transition-all duration-200 border ${isDark
+                ? 'bg-green-800 hover:bg-green-700 text-green-300 border-green-700 hover:border-green-600'
+                : 'bg-green-600 hover:bg-green-700 text-white border-green-600 hover:border-green-700'
+                } hover:scale-105 active:scale-95 shadow-sm hover:shadow-md`}
             >
               <div className="flex items-center justify-center space-x-2">
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-5 h-5" />
                 <span>Open Map</span>
               </div>
             </button>
           </div>
         )}
-
-        {/* Fun fact */}
-        <div className="text-center mt-8 sm:mt-10">
-          <p className={`text-sm sm:text-base ${isDark ? 'text-gray-400' : 'text-gray-600'
-            }`}>
-            🌍 Every click takes you to a unique place on Earth!
-          </p>
-        </div>
       </div>
     </div>
   );
