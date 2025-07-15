@@ -7,6 +7,25 @@ export default function App() {
   const [animatedLat, setAnimatedLat] = useState(0);
   const [animatedLng, setAnimatedLng] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [includeOceans, setIncludeOceans] = useState(true);
+
+  // Continent bounding boxes (approximate)
+  const continentBounds = [
+    // North America
+    { name: 'North America', minLat: 25, maxLat: 72, minLng: -168, maxLng: -52 },
+    // South America
+    { name: 'South America', minLat: -56, maxLat: 13, minLng: -82, maxLng: -35 },
+    // Europe
+    { name: 'Europe', minLat: 36, maxLat: 71, minLng: -10, maxLng: 40 },
+    // Asia
+    { name: 'Asia', minLat: 10, maxLat: 77, minLng: 26, maxLng: 180 },
+    // Africa
+    { name: 'Africa', minLat: -35, maxLat: 37, minLng: -18, maxLng: 52 },
+    // Australia
+    { name: 'Australia', minLat: -44, maxLat: -10, minLng: 113, maxLng: 154 },
+    // Antarctica
+    { name: 'Antarctica', minLat: -90, maxLat: -60, minLng: -180, maxLng: 180 }
+  ];
 
   // Animation effect for numbers
   useEffect(() => {
@@ -20,13 +39,28 @@ export default function App() {
     }
   }, [isGenerating]);
 
+  const generateRandomCoordinatesInContinent = () => {
+    const continent = continentBounds[Math.floor(Math.random() * continentBounds.length)];
+    const lat = continent.minLat + Math.random() * (continent.maxLat - continent.minLat);
+    const lng = continent.minLng + Math.random() * (continent.maxLng - continent.minLng);
+    return { lat, lng };
+  };
+
   const generateRandomCoordinates = () => {
     setIsGenerating(true);
     setCopied(false);
 
     setTimeout(() => {
-      const lat = (Math.random() - 0.5) * 180; // -90 to 90
-      const lng = (Math.random() - 0.5) * 360; // -180 to 180
+      let lat, lng;
+
+      if (includeOceans) {
+        lat = (Math.random() - 0.5) * 180; // -90 to 90
+        lng = (Math.random() - 0.5) * 360; // -180 to 180
+      } else {
+        const coords = generateRandomCoordinatesInContinent();
+        lat = coords.lat;
+        lng = coords.lng;
+      }
 
       setCoordinates({ lat, lng });
       setAnimatedLat(lat);
@@ -89,6 +123,22 @@ export default function App() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Checkbox for ocean inclusion */}
+        <div className="mb-6 sm:mb-8">
+          <label className="flex items-center justify-center space-x-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={includeOceans}
+              onChange={(e) => setIncludeOceans(e.target.checked)}
+              className="w-4 h-4 text-teal-600 bg-gray-100 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
+            />
+            <span className="text-gray-700 font-medium">Include oceans</span>
+          </label>
+          <p className="text-center text-sm text-gray-500 mt-2">
+            {includeOceans ? 'Anywhere on Earth' : 'Approximately continental regions only'}
+          </p>
         </div>
 
         {/* Generate Button */}
