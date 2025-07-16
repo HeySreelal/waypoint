@@ -10,7 +10,7 @@ export default function App() {
   const [animatedLat, setAnimatedLat] = useState(0);
   const [animatedLng, setAnimatedLng] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [includeOceans, setIncludeOceans] = useState(true);
+  const [includeOceans, setIncludeOceans] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Continent bounding boxes (approximate)
